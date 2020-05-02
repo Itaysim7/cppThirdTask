@@ -99,6 +99,7 @@ namespace solver
     {
         return r1-r2;
     }
+
     bool RealVariable::operator! () const
     {
         if(this->a==0&&this->b==0&&this->c==0)
@@ -112,122 +113,99 @@ namespace solver
     ////////////////////////////////////////////////////////
     
     
-    
-    ComplexVariable operator* (const ComplexVariable& x, const complex<double> n) {
-        return ComplexVariable(x.a*n, x.b*n, x.c*n);
-
+    ComplexVariable operator+ (const ComplexVariable& c, const complex<double> n) 
+    {
+        return ComplexVariable(c.a,c.b,c.c+n);
     }
-
-    ComplexVariable operator* (const complex<double> n , const ComplexVariable& x) {
-        return ComplexVariable(x.a*n, x.b*n, x.c*n);
-
+    ComplexVariable operator+ (const complex<double> n , const ComplexVariable& c)
+    {
+        return ComplexVariable(c.a,c.b,c.c+n);
     }
-
-    ComplexVariable operator* (const ComplexVariable& left, const ComplexVariable& right) {
-        if(left.a != complex(0.0,0.0) && right.a != complex(0.0,0.0)) throw invalid_argument("power is too big");
-        if(left.a != complex(0.0,0.0) && right.b != complex(0.0,0.0)) throw invalid_argument("power is too big");
-        if(left.b != complex(0.0,0.0) && right.a != complex(0.0,0.0)) throw invalid_argument("power is too big");
-
-        return ComplexVariable(left.a * right.c + right.a * left.c + left.b * right.b ,
-                                 left.b * right.c + right.b * left.c,
-                                     left.c * right.c);
-
+    ComplexVariable operator- (const complex<double> n , const ComplexVariable& c)
+    {
+        return ComplexVariable(-c.a, -c.b , -c.c+n);
+    }
+    ComplexVariable operator- (const ComplexVariable& c, const complex<double> n)
+    {
+        return ComplexVariable(c.a,c.b,c.c-n);
+    }
+    ComplexVariable operator* (const ComplexVariable& c, const complex<double> n)
+    {
+        return ComplexVariable(c.a*n, c.b*n, c.c*n);
+    }
+    ComplexVariable operator* (const complex<double> n , const ComplexVariable& c)
+    {
+        return ComplexVariable(c.a*n, c.b*n, c.c*n);
+    }
+    ComplexVariable operator/ (const ComplexVariable& c, const complex<double> n)
+    {
+        if(n.real()==0&&n.imag()==0)
+            throw invalid_argument("Division by zero is not valid");
+        return ComplexVariable(c.a/n,c.b/n,c.c/n);
+    }
+    ComplexVariable operator+ (const ComplexVariable& c1, const ComplexVariable& c2)
+    {
+        return ComplexVariable(c1.a+c2.a,c1.b+c2.b,c1.c+c2.c);
+    }
+    ComplexVariable operator- (const ComplexVariable& c1, const ComplexVariable& c2)
+    {
+        return ComplexVariable(c1.a-c2.a,c1.b-c2.b,c1.c-c2.c);
+    }
+    ComplexVariable operator* (const ComplexVariable& c1, const ComplexVariable& c2)
+    {
+        if((c1.a!=complex(0.0,0.0)&&c2.a!=complex(0.0,0.0))||(c1.a!=complex(0.0,0.0)&&c2.b!=complex(0.0,0.0))||(c2.a!=complex(0.0,0.0)&&c1.b!=complex(0.0,0.0)))
+        {
+            throw runtime_error("power is bigger then 2");
+        }
+        return ComplexVariable(c1.a*c2.c+c2.a*c1.c+c1.b*c2.b,c1.b*c2.c+c2.b*c1.c,c1.c*c2.c);
     }   
-
-    ComplexVariable operator+ (const ComplexVariable& x, const complex<double> n) {
-        return ComplexVariable(x.a, x.b , x.c+n);
-
-    }
     
-    ComplexVariable operator+ (const complex<double> n , const ComplexVariable& x) {
-        return ComplexVariable(x.a, x.b , x.c+n);
-    }
-
-    ComplexVariable operator+ (const ComplexVariable& left, const ComplexVariable& right) {
-        return ComplexVariable(left.a + right.a , left.b + right.b , left.c + right.c);
-    
-    }
-
-    ComplexVariable operator- (const ComplexVariable& x, const complex<double> n) {
-        return ComplexVariable(x.a, x.b , x.c-n);
-        
-    }
-    
-    ComplexVariable operator- (const complex<double> n , const ComplexVariable& x) {
-        return ComplexVariable(-x.a, -x.b , -x.c+n);
-        
-    }
-
-    ComplexVariable operator- (const ComplexVariable& left, const ComplexVariable& right) {
-        return ComplexVariable(left.a - right.a , left.b - right.b , left.c - right.c);
-
-    }
-
-    ComplexVariable operator^ (const ComplexVariable& x, const complex<double> n) {
-        if(n.imag() != 0) throw invalid_argument("complex power is not valid");
-
-        if(n.real() == 2) {
+    ComplexVariable operator^ (const ComplexVariable& C, const complex<double> n) 
+    {
+        if(n.imag() != 0) 
+            throw runtime_error("Complex power is not valid");
+        if(n.real() == 2) 
             return ComplexVariable(complex(1.0,0.0),complex(0.0,0.0),complex(0.0,0.0));
-        }
-        if (n.real() == 1) {
+        if (n.real() == 1)
             return ComplexVariable(complex(0.0,0.0),complex(1.0,0.0),complex(0.0,0.0));
-        }
-        if (n.real() == 0) {
+        if (n.real() == 0) 
             return ComplexVariable(complex(0.0,0.0),complex(0.0,0.0),complex(1.0,0.0));
-        }
-        throw invalid_argument("power is not vaild: ");
-
+        throw runtime_error("Complex power is not valid");
     }
-
-    ComplexVariable operator/ (const ComplexVariable& x, const complex<double> n) {
-        if(n == complex(0.0,0.0)) throw invalid_argument("Division by zero is not valid");
-
-        return ComplexVariable(x.a/n, x.b/n, x.c/n);
-
-    }
-    
-    ComplexVariable operator/ (const ComplexVariable& left, const ComplexVariable& right) {
+    ComplexVariable operator/ (const ComplexVariable& c1, const ComplexVariable& c2) 
+    {
         ComplexVariable x;
-
-        if(!right) throw invalid_argument("Division by zero is not valid");
-
-        if(!(left - right)) return ComplexVariable(0,0,complex(1.0,0.0));
-        if(!(left - (x^2)) && !(right - x)) return ComplexVariable(0,complex(1.0,0.0),0);
-        if(right.a == complex(0.0,0.0) && right.b == complex(0.0,0.0)) return left/right.c;
-
-        throw invalid_argument("divison is out of our assignment's scope");
+        if(!c2)
+            throw runtime_error("divide by zero");
+        if(!(c1-c2)) 
+            return ComplexVariable(0,0,complex(1.0,0.0));
+        if(!(c2-c1)) 
+            return ComplexVariable(0,0,complex(1.0,0.0));
+        if(!(c1-(x^2))&&!(c2-x))
+            return ComplexVariable(0,complex(1.0,0.0),0);
+        if(c2.a==complex(0.0,0.0)&&c2.b==complex(0.0,0.0))
+            return c1/c2.c;
+        throw runtime_error("error in divide");
     }
-
-
-    ComplexVariable operator== (const ComplexVariable& r1, const ComplexVariable& r2) {
-        return r1-r2;
-
-    }
-
-    ComplexVariable operator== (const complex<double> n, const ComplexVariable& r) 
+    ComplexVariable operator== (const ComplexVariable& c1, const ComplexVariable& c2) 
     {
-        return r-n;
+        return c1-c2;
     }
-    
-    ComplexVariable operator== (const ComplexVariable& r, const complex<double> n)
+    ComplexVariable operator== (const complex<double> n, const ComplexVariable& c) 
     {
-        return r-n;
+        return n-c;
     }
-     bool ComplexVariable::operator! () const 
-     {
-        return ((this->a.real() == 0.0) && (this->a.imag() == 0.0) && 
-                (this->b.real() == 0.0) && (this->b.imag() == 0.0) &&
-                (this->c.real() == 0.0) && (this->c.imag() == 0.0));
+    ComplexVariable operator== (const ComplexVariable& c, const complex<double> n)
+    {
+        return c-n;
+    }
+    bool ComplexVariable::operator! () const 
+    {
+        if ((this->a.real()==0.0)&&(this->a.imag()==0.0)&&(this->b.real()==0.0)&&(this->b.imag()==0.0)&&(this->c.real()== 0.0)&&(this->c.imag()==0.0))
+            return true;
+        return false;
     }
 
-    string operator+ (const ComplexVariable& x, const string str) {
-        return "("+ to_string(x.a.real()) + "+" + to_string(x.a.imag())  + "i)*x^2 +" + "("+ to_string(x.b.real()) + "+" + to_string(x.b.imag())  + "i)*x +("+ to_string(x.c.real()) + "+" + to_string(x.c.imag())  + "i)" + str;
-    }
-    
-    string operator+ (const string str , const ComplexVariable& x) {
-        return str + "("+ to_string(x.a.real()) + "+" + to_string(x.a.imag())  + "i)*x^2 +" + "("+ to_string(x.b.real()) + "+" + to_string(x.b.imag())  + "i)*x +("+ to_string(x.c.real()) + "+" + to_string(x.c.imag())  + "i)";
-
-    }
 // /////////////////////////////////////////////////////////////
 
     double solve(const RealVariable& r)
@@ -237,6 +215,8 @@ namespace solver
         double c=r.getC();
         if(!r)
             return 0;
+        if(a==0&&b==0&&c!=0) 
+            throw runtime_error("There is no solution");
         if(a==0&&b!=0) 
             return (c/-b);
         if(a==0&&b==0) 
@@ -246,36 +226,26 @@ namespace solver
             return ((-b + sqrt(formula))/(2*a));
         throw runtime_error("There is no real solution");
     }
-
-    complex<double> solve(const ComplexVariable& equation)
+    complex<double> solve(const ComplexVariable& c1)
     {
-        complex<double> a = equation.get_a(), b = equation.get_b(), c = equation.get_c();
-
-        if(!equation) return 0;
-
-        if(a == complex(0.0,0.0)) { // The equation is linear
-            if ((b == complex(0.0,0.0)) && (c != complex(0.0,0.0))) throw runtime_error("There is no solution for this equation");
+        complex<double> a=c1.getA();
+        complex<double> b=c1.getB();
+        complex<double> c=c1.getC();
+        if(!c1)
+            return 0;
+        if(a==complex(0.0,0.0))
+        { 
+            if ((b==complex(0.0,0.0))&&(c!=complex(0.0,0.0)))
+                throw runtime_error("There is no solution for this equation");
             else return -c/b;
         }
-        
-        complex<double> x1, discriminant;
-
-        discriminant = b*b - complex(4.0,0.0)*a*c;
-    
-        x1 = (-b + sqrt(discriminant)) / (complex(2.0,0.0)*a);
-
-        return x1;
-
+        complex<double> formula=b*b-complex(4.0,0.0)*a*c;
+        return ((-b + sqrt(formula)) / (complex(2.0,0.0)*a));
     }
-
     double solve(const bool t)
     {
-        if(t)
-            return 0;
-        throw runtime_error("There is no solution for this equation");
+        if(!t)
+            throw runtime_error("There is no solution for this equation");
+        return 0;
     }
-
-  
-
-
 }
