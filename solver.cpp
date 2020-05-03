@@ -108,6 +108,15 @@ namespace solver
         }
         return false;
     }
+    string operator+ (const RealVariable& r, const string str)
+    {
+        return to_string((int)r.a)+"x^2+"+to_string((int)r.b)+"x +"+to_string((int)r.c)+str;
+    }
+    
+    string operator+ (const string str , const RealVariable& r) 
+    {
+        return str + to_string((int)r.a) + "x^2 +" + to_string((int)r.b) + "x +"+ to_string((int)r.c);
+    }
     
     // ///////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////
@@ -204,6 +213,14 @@ namespace solver
         if ((this->a.real()==0.0)&&(this->a.imag()==0.0)&&(this->b.real()==0.0)&&(this->b.imag()==0.0)&&(this->c.real()== 0.0)&&(this->c.imag()==0.0))
             return true;
         return false;
+    }
+     string operator+ (const ComplexVariable& c, const string str)
+     {
+        return "("+to_string(c.a.real())+"+"+to_string(c.a.imag())+"i)*x^2+"+"("+to_string(c.b.real())+"+"+to_string(c.b.imag())+"i)*x +("+to_string(c.c.real())+"+"+to_string(c.c.imag())  + "i)"+str;
+    }
+    
+    string operator+ (const string str , const ComplexVariable& c) {
+        return str+"("+to_string(c.a.real())+"+"+to_string(c.a.imag())+ "i)*x^2 +"+"("+to_string(c.b.real())+"+"+to_string(c.b.imag())+ "i)*x +("+to_string(c.c.real())+"+"+to_string(c.c.imag())+ "i)";
     }
 
 // /////////////////////////////////////////////////////////////

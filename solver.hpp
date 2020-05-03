@@ -57,6 +57,9 @@ namespace solver
 
 
         bool operator! () const;
+        
+        friend string operator+ (const RealVariable&, const string);
+        friend string operator+ (const string,const RealVariable&);
 
  
     };
@@ -112,12 +115,12 @@ namespace solver
         
         ComplexVariable operator- () const;
         
-
         bool operator! () const;
+        
+        friend string operator+ (const ComplexVariable& x, const string str);
+        friend string operator+ (const string str ,const ComplexVariable& x);
     };
     double solve(const RealVariable& );
     double solve(const bool);
-    
-
     complex<double> solve(const ComplexVariable&);
 };
